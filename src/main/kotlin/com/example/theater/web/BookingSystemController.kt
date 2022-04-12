@@ -1,41 +1,38 @@
 package com.example.theater.web
 
-import com.example.theater.data.InitDataMigration
+
+import com.example.theater.service.CheckBookingDTO
 import com.example.theater.service.TheaterService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.servlet.ModelAndView
 
-@RestController
+@Controller
+@RequestMapping("/bookings")
 class BookingSystemController {
 
     @Autowired
     lateinit var service: TheaterService
 
-
     @GetMapping
-    fun homePage(): ModelAndView {
-        return ModelAndView("seatBooking", "bean", CheckAvailabilityBackingBean())
+    fun root(): ModelAndView {
+        val dto = service.getInitDTO()
+        return ModelAndView("seatBooking", "bean", dto)
     }
 
-    @PostMapping("/checkAvailability")
-    fun checkAvailability(bean: CheckAvailabilityBackingBean): ModelAndView {
-        val res = service.isSeatFree(bean.selectedSeatNum, bean.selectedSeatRow)
-        bean.result = "Seat ${bean.selectedSeatNum}-${bean.selectedSeatRow} is " + if (res) "available" else "booked"
-        return ModelAndView("seatBooking", "bean", bean)
+
+    @PostMapping("/check-availability")
+    fun checkAvailability(dto: CheckBookingDTO): ModelAndView {
+        val res = service.checkAvailability(dto)
+        return ModelAndView("seatBooking", "bean", res)
     }
 
 
 }
 
-class CheckAvailabilityBackingBean {
-    val seatNums = 1..36
-    val seatRows = 'A'..'O'
-    var selectedSeatNum = 1
-    var selectedSeatRow = ' '
-    var result = ""
-}
+
 
 

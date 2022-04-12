@@ -1,24 +1,22 @@
 package com.example.theater.domain
 
-
-import java.math.BigDecimal
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-
+import javax.persistence.ManyToOne
 
 @Entity
-data class Seat (
+data class Booking(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
-    val rowNumber: Int,
-    val seat: Char,
-    val price: BigDecimal,
-    val description: String
+
+    val customerName: String
 ) {
+    @ManyToOne
+    lateinit var seat: Seat
 
-    override fun toString(): String = "Seat $rowNumber-$seat $$price ($description)"
+    @ManyToOne
+    lateinit var performance: Performance
 }
-

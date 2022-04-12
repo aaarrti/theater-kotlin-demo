@@ -30,7 +30,7 @@ dependencies {
 	implementation("com.h2database:h2")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework:springloaded:1.2.8.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {

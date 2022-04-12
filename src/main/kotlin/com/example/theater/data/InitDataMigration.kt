@@ -1,6 +1,7 @@
 package com.example.theater.data
 
 
+import com.example.theater.domain.Performance
 import com.example.theater.service.TheaterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -13,8 +14,18 @@ class InitDataMigration {
 
     @Autowired
     lateinit var service: TheaterService
+    @Autowired
+    lateinit var performanceRepository: PerformanceRepository
 
     @EventListener(classes = [ApplicationReadyEvent::class])
-    fun initDB() = service.initMigration()
+    fun initDB(){
+        service.fillSeatsDB()
+        performanceRepository.saveAll(
+            listOf(
+                Performance(0, "Swan Lake"),
+                Performance(0, "Your Mom")
+            )
+        )
+    }
 
 }

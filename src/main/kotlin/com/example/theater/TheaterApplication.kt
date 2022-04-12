@@ -2,9 +2,7 @@ package com.example.theater
 
 import mu.KotlinLogging
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.boot.runApplication
-import org.springframework.context.event.EventListener
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication
@@ -18,7 +16,7 @@ fun main(args: Array<String>) {
         """
 ---------------------------------------------------------------------------------------------------------------
 Application running!
-Visit localhost:8080
+Visit http://localhost:8080
 ---------------------------------------------------------------------------------------------------------------
 		"""
     )
