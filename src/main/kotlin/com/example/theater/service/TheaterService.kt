@@ -27,6 +27,11 @@ class TheaterService {
     @Autowired
     lateinit var bookingRepository: BookingRepository
 
+    private val BEST_VIEW_ROWS = listOf(1, 2)
+    private val LAST_ROW = 15
+    private val PRE_LAST_ROW = 14
+    private val RESTRICTED_VIEW_SEATS = arrayOf('A', 'B', 'C', 'X', 'Y', 'Z')
+
     fun checkAvailability(dto: CheckBookingDTO): CheckBookingDTO {
         val seatEntity: Seat = seatRepository.findByRowNumberAndSeat(dto.selectedSeatRow, dto.selectedSeatNum)
         val booking: Booking? = bookingRepository.findByPerformanceAndSeat(dto.selectedPerformance!!, seatEntity)
@@ -72,25 +77,22 @@ class TheaterService {
         seatRepository.saveAll(seats)
     }
 
-    private fun calcPrice(row: Int, column: Char) = calcPrice(row, column - 'B')
-
-    private fun calcPrice(row: Int, column: Int) = when {
+    private fun calcPrice(row: Int, column: Char) = when {
         // 2 last rows
-        row >= 14 -> BigDecimal(14.5)
-        column in arrayOf(1, 2, 3, 34, 35, 36) -> BigDecimal(16.5)
-        row == 1 || row == 2 -> BigDecimal(21)
+        row == LAST_ROW || row == PRE_LAST_ROW -> BigDecimal(14.5)
+        column in RESTRICTED_VIEW_SEATS -> BigDecimal(16.5)
+        row in BEST_VIEW_ROWS -> BigDecimal(21)
         else -> BigDecimal(18)
     }
 
-    private fun getDescription(row: Int, column: Char) = getDescription(row, column - 'B')
 
-    private fun getDescription(row: Int, column: Int) = when {
+    private fun getDescription(row: Int, column: Char) = when {
         // 2 lat rows
-        row == 15 -> "Back row"
-        row == 14 -> "Cheaper seat"
-        column in arrayOf(1, 2, 3, 34, 35, 36) -> "Restricted view"
-        row == 1 || row == 2 -> "Best view"
-        else -> "Standard SEAT"
+        row == LAST_ROW -> "Back row"
+        row == PRE_LAST_ROW -> "Cheaper seat"
+        column in RESTRICTED_VIEW_SEATS  -> "Restricted view"
+        row in BEST_VIEW_ROWS -> "Best view"
+        else -> "Standard seat"
     }
 
 }
