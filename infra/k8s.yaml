@@ -25,7 +25,7 @@ spec:
         app: theater
     spec:
       containers:
-        - name: web
+        - name: theater-app
           image: theater:0.0.1-SNAPSHOT
           ports:
             - containerPort: 8080

@@ -1,7 +1,7 @@
 apiVersion: skaffold/v1
 kind: Config
 metadata:
-  name: myapp
+  name: theater-app
 build:
   artifacts:
     - image: theater
@@ -11,8 +11,8 @@ deploy:
     manifests:
       - infra/k8s.yaml
 
-portForward: # This part is optional; add if want port-forwarding
-  - resourceType: service #This too can change
+portForward:
+  - resourceType: service
     resourceName: theater-svc
     port: 8080
     localPort: 8080

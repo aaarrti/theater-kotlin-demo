@@ -6,16 +6,19 @@
 </head>
 <body>
     <h1>Theater Booking</h1>
+    <div>
+        <img src="/img.png" alt="alternatetext">
+    </div>
 <h2>Seat availability</h2>
 
     <form action="/bookings/check-availability" th:object="${bean}" method="POST">
-        <p>Check if seat number
-            <select th:field="*{selectedSeatNum}">
-                <option th:each="n : ${bean.seatNums}" th:value="${n}" th:text="${n}" />
-            </select>
-            in row
+        <p>Check if seat in row
             <select th:field="*{selectedSeatRow}">
                 <option th:each="r : ${bean.seatRows}" th:value="${r}" th:text="${r}" />
+            </select>
+            with number
+            <select th:field="*{selectedSeatNum}">
+                <option th:each="n : ${bean.seatNums}" th:value="${n}" th:text="${n}" />
             </select>
             is available for performance
             <select th:field="*{selectedPerformance}">
@@ -28,7 +31,7 @@
     </form>
        <div th:if="${bean.available != null}">
            <div th:if="${bean.available}">
-           Seat <span th:text="${bean.seat}">seatNumber</span> is available for this performance - do you want to book it?
+           <span th:text="${bean.seat}">seatNumber</span> is available for this performance - do you want to book it?
 
            <form action="/bookings/book" method="POST" th:object="${bean}">
                <input type="hidden" th:field="*{seat}" />
@@ -44,7 +47,10 @@
            I'm sorry - this seat is already booked for this performance. The customer is <span th:text="${bean.booking.customerName}"}></span></a>
        </p>
 
+    <div>
+        <a href="/">Home page</a>
+    </div>
 
 
-   </body>
+</body>
    </html>

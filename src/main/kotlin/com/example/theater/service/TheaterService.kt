@@ -32,6 +32,7 @@ class TheaterService {
         val booking: Booking? = bookingRepository.findByPerformanceAndSeat(dto.selectedPerformance!!, seatEntity)
         dto.performance = dto.selectedPerformance?.title
         dto.performances = performanceRepository.findAll()
+        dto.seat = seatEntity
         if (booking == null) {
             dto.available = true
         } else {
@@ -48,8 +49,8 @@ class TheaterService {
 
     fun doBook(dto: CheckBookingDTO): BookingConfirmationDTO {
         val booking = Booking(0, dto.customerName)
+        booking.seat = dto.seat!!
         booking.performance = performanceRepository.findByTitle(dto.performance!!)
-        booking.seat = seatRepository.findByRowNumberAndSeat(dto.selectedSeatRow, dto.selectedSeatNum)
         bookingRepository.save(booking)
         val dto = BookingConfirmationDTO(booking.seat, booking.performance, booking.customerName)
         return dto
@@ -58,11 +59,11 @@ class TheaterService {
     fun fillSeatsDB() {
         logger.info("Filling the database")
         val seats = ((1..15).map { row ->
-            (1..36).map { column ->
+            ('A'..'Z').map { column ->
                 Seat(
                     id = 0,
                     rowNumber = row,
-                    seat = (column + 64).toChar(),
+                    seat = column,
                     price = calcPrice(row, column),
                     description = getDescription(row, column)
                 )
@@ -71,16 +72,19 @@ class TheaterService {
         seatRepository.saveAll(seats)
     }
 
-    fun calcPrice(row: Int, column: Int) = when {
-        // 2 lat rows
+    private fun calcPrice(row: Int, column: Char) = calcPrice(row, column - 'B')
+
+    private fun calcPrice(row: Int, column: Int) = when {
+        // 2 last rows
         row >= 14 -> BigDecimal(14.5)
         column in arrayOf(1, 2, 3, 34, 35, 36) -> BigDecimal(16.5)
         row == 1 || row == 2 -> BigDecimal(21)
         else -> BigDecimal(18)
     }
 
+    private fun getDescription(row: Int, column: Char) = getDescription(row, column - 'B')
 
-    fun getDescription(row: Int, column: Int) = when {
+    private fun getDescription(row: Int, column: Int) = when {
         // 2 lat rows
         row == 15 -> "Back row"
         row == 14 -> "Cheaper seat"
@@ -93,8 +97,8 @@ class TheaterService {
 
 
 class CheckBookingDTO(
-    val seatRows: IntRange = 1..36,
-    val seatNums: CharRange = 'A'..'O',
+    val seatRows: IntRange = 1..15,
+    val seatNums: CharRange = 'A'..'Z',
     var performances: List<Performance>?,
     var selectedSeatRow: Int = 1,
     var selectedSeatNum: Char = 'A',
