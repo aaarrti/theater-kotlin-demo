@@ -7,7 +7,8 @@ plugins {
 	kotlin("plugin.spring") version "1.6.20-RC2"
 	kotlin("plugin.jpa") version "1.6.20-RC2"
 	kotlin("plugin.noarg") version "1.6.20-RC2"
-	//kotlin("plugin.allopen") version "1.6.20"
+	id("com.google.cloud.tools.jib") version "3.2.1"
+
 }
 
 group = "com.example"
@@ -28,9 +29,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("com.h2database:h2")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
-	implementation("org.springframework:springloaded:1.2.8.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {
