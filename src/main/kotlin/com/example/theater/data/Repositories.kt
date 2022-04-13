@@ -15,9 +15,12 @@ interface SeatRepository : JpaRepository<Seat, Long> {
 }
 
 @Repository
-interface PerformanceRepository: JpaRepository<Performance, Long>
+interface PerformanceRepository : JpaRepository<Performance, Long> {
+    fun findByTitle(title: String): Performance
+
+}
 
 @Repository
-interface BookingRepository: JpaRepository<Booking, Long> {
+interface BookingRepository : JpaRepository<Booking, Long> {
     fun findByPerformanceAndSeat(perf: Performance, seat: Seat): Booking?
 }

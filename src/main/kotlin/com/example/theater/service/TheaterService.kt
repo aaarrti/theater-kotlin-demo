@@ -20,24 +20,39 @@ class TheaterService {
 
     @Autowired
     lateinit var seatRepository: SeatRepository
+
     @Autowired
     lateinit var performanceRepository: PerformanceRepository
+
     @Autowired
     lateinit var bookingRepository: BookingRepository
 
     fun checkAvailability(dto: CheckBookingDTO): CheckBookingDTO {
         val seatEntity: Seat = seatRepository.findByRowNumberAndSeat(dto.selectedSeatRow, dto.selectedSeatNum)
         val booking: Booking? = bookingRepository.findByPerformanceAndSeat(dto.selectedPerformance!!, seatEntity)
-        dto.available = booking == null
-        //dto.seat = seatEntity
         dto.performance = dto.selectedPerformance?.title
         dto.performances = performanceRepository.findAll()
+        if (booking == null) {
+            dto.available = true
+        } else {
+            dto.available = false
+            dto.booking = booking
+        }
         return dto
     }
 
     fun getInitDTO(): CheckBookingDTO {
         val performanse = performanceRepository.findAll()
         return CheckBookingDTO(performances = performanse)
+    }
+
+    fun doBook(dto: CheckBookingDTO): BookingConfirmationDTO {
+        val booking = Booking(0, dto.customerName)
+        booking.performance = performanceRepository.findByTitle(dto.performance!!)
+        booking.seat = seatRepository.findByRowNumberAndSeat(dto.selectedSeatRow, dto.selectedSeatNum)
+        bookingRepository.save(booking)
+        val dto = BookingConfirmationDTO(booking.seat, booking.performance, booking.customerName)
+        return dto
     }
 
     fun fillSeatsDB() {
@@ -77,19 +92,23 @@ class TheaterService {
 }
 
 
-open class CheckBookingDTO(
+class CheckBookingDTO(
     val seatRows: IntRange = 1..36,
     val seatNums: CharRange = 'A'..'O',
     var performances: List<Performance>?,
     var selectedSeatRow: Int = 1,
     var selectedSeatNum: Char = 'A',
     var selectedPerformance: Performance? = performances?.get(0),
-    var available: Boolean = false,
+    var available: Boolean? = null,
     var booking: Booking = Booking(0, ""),
     var seat: Seat? = null,
     var performance: String? = null,
     var customerName: String = ""
 )
+
+class BookingConfirmationDTO(val seat: Seat, val performance: Performance, val customerName: String)
+
+
 
 
 

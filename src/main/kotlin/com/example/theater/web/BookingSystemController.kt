@@ -30,6 +30,12 @@ class BookingSystemController {
         return ModelAndView("seatBooking", "bean", res)
     }
 
+    @PostMapping("/book")
+    fun book(dto: CheckBookingDTO) : ModelAndView{
+        val res = service.doBook(dto)
+        return ModelAndView("bookingConfirmed", "booking", res)
+    }
+
 
 }
 

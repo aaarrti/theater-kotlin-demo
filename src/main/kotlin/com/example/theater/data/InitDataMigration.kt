@@ -22,7 +22,7 @@ class InitDataMigration {
         service.fillSeatsDB()
         performanceRepository.saveAll(
             listOf(
-                Performance(0, "Swan Lake"),
+                Performance(0, "Shrek 3"),
                 Performance(0, "Your Mom")
             )
         )

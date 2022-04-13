@@ -11,7 +11,6 @@ data class Booking(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
-
     val customerName: String
 ) {
     @ManyToOne
